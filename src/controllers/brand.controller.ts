@@ -7,6 +7,8 @@ import {
   Delete,
   Param,
   HttpException,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { BrandService } from 'src/services/brand.service';
 import {
@@ -14,6 +16,7 @@ import {
   DeleteBrandDto,
   UpdateBrandDto,
 } from 'src/dtos/brand.dto';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('brands')
 export class BrandController {
@@ -38,15 +41,18 @@ export class BrandController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async createProduct(@Body() createBrandDto: CreateBrandDto) {
+  async createProduct(@Request() req, @Body() createBrandDto: CreateBrandDto) {
     try {
+      console.log(req.user);
       return await this.brandService.create(createBrandDto);
     } catch (error) {
       throw new HttpException(error, 500);
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put()
   async updateProduct(@Body() updateBrandDto: UpdateBrandDto) {
     try {
@@ -56,6 +62,7 @@ export class BrandController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteProduct(@Body() deleteBrandDto: DeleteBrandDto) {
     try {

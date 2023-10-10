@@ -1,4 +1,4 @@
-export interface Brand {
+export interface IBrand {
   id: number;
   name: string;
   logo_url: string;

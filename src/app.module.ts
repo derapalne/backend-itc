@@ -7,9 +7,13 @@ import { Product } from './models/product.model';
 import { ProductModule } from './modules/product.module';
 import { BrandModule } from './modules/brand.module';
 import { Brand } from './models/brand.model';
+import { AuthModule } from './modules/auth.module';
+import { UserModule } from './modules/user.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     SequelizeModule.forRoot({
       dialect: 'sqlite',
       storage: '.db/data.sqlite3',
@@ -20,6 +24,8 @@ import { Brand } from './models/brand.model';
     }),
     ProductModule,
     BrandModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

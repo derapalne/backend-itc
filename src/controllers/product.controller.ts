@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   HttpException,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from 'src/services/product.service';
 import {
@@ -15,6 +16,7 @@ import {
   DeleteProductDto,
   UpdateProductDto,
 } from 'src/dtos/product.dto';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductController {
@@ -39,6 +41,7 @@ export class ProductController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createProduct(@Body() createProductDto: CreateProductDto) {
     try {
@@ -48,6 +51,7 @@ export class ProductController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put()
   async updateProduct(@Body() updateProductDto: UpdateProductDto) {
     try {
@@ -57,6 +61,7 @@ export class ProductController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteProduct(@Body() deleteProductDto: DeleteProductDto) {
     try {

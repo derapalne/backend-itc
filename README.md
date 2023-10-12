@@ -2,6 +2,13 @@
 
 This is the back-end for my Fullstack project "Free Shopping"
 
+## To run the code:
+```bash
+npm i // To install all dependencies
+npm run build // To complie the project
+npm run start:prod // To run the project
+```
+
 ## ENDPOINTS
 
 ### Public Methods <br/>

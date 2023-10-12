@@ -1,73 +1,107 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Free Shopping Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the back-end for my Fullstack project "Free Shopping"
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ENDPOINTS
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+### Public Methods <br/>
+#### Products
+GET /products -> Get all products <br/>
+GET /products/:id -> Get the product with matching Id<br/>
+#### Brands
+GET /brands -> Get all brands <br/>
+GET /brands/:id -> Get the brand with matching Id<br/>
+#### Auth
+POST /auth/login -> Log in with your account. Data structure: <br/>
+```bash
+{
+	"username" : "dera", // String
+	"password": "bruhmium" // String
+}
+```
+POST /auth/signup -> Create your account. Data structure: <br/>
+```bash
+{
+	"username" : "dera", // String
+	"password": "bruhmium", // String
+	"matchingPassword": "bruhmium" // String
+}
+```
+### Protected Methods<br/>
+#### Products
+POST /products -> Create a product. Data structure: (all required)<br/>
 
 ```bash
-$ npm install
+{
+	"name" : "Discrepancy", // String
+	"description": "Makes you confused about two conflicting facts", // String
+	"price": 1500, // Number
+	"image_url": "https://pics.freeicons.io/uploads/icons/png/15442581531684167749-512.png", // String
+	"brand_id": 2 // Number
+}
 ```
 
-## Running the app
+PUT /products -> Update a product. Data structure:<br/>
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+{
+	"id": 3, // Number, required
+	"name" : "Discrepancy", // String, optional
+	"description": "Makes you confused about two conflicting facts", // String, optional
+	"price": 1500, // Number, optional
+	"image_url": "https://pics.freeicons.io/uploads/icons/png/15442581531684167749-512.png", // String, optional
+	"brand_id": 2 // Number, optional
+}
 ```
-
-## Test
+DELETE /products -> Delete a product. Data structure:<br/>
 
 ```bash
-# unit tests
-$ npm run test
+{
+	"id": 3, // Number, required
+}
+```
+#### Brands
+POST /brands -> Create a brand. Data structure: (all required)<br/>
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```bash
+{
+	"name" : "Singing Spirits", // String
+	"logo_url": "https://pics.freeicons.io/uploads/icons/png/5639170651695535536-512.png", // String
+}
 ```
 
-## Support
+PUT /brands -> Update a brand. Data structure:<br/>
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+{
+	"id": 3, // Number, required
+	"name" : "Singing Spirits", // String, optional
+	"logo_url": "https://pics.freeicons.io/uploads/icons/png/5639170651695535536-512.png", // String, optional
+}
+```
+DELETE /brands -> Delete a brand. Data structure:<br/>
 
-## Stay in touch
+```bash
+{
+	"id": 3, // Number, required
+}
+```
+### Populating the Database
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Included in the repo is the file Insomnia_Requests_To_Populate. You may have to run these requests on Insomnia to populate the database with brands and products.<br/>
+This is especially necessary when hosting on Render, on which the free plan resets all files on deploy or inactivity.
+To do so you need an access token. You can get this after logging in in your browser from the cookie access_token.<br/>
+Then you need to add your token to the Authorization header of the requests, otherwise the server will reject your petition.<br/>
+The header should look like this:<br/>
+```bash
+Authorization: Bearer [your-access-token]
+```
+You will also need to add the brands BEFORE the products. Otherwise ther will be an error, as every product is required to have a brand.
 
-## License
+### Environmental Variables
 
-Nest is [MIT licensed](LICENSE).
+There is only one Env Variable:
+
+JWT_SECRET=(your_secret_here)
+
+Store it in .env at the root of the project.

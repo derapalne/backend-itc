@@ -38,4 +38,8 @@ export class BrandService {
     const brand = await this.findById(id);
     return await brand.destroy();
   }
+
+  async truncateTable(): Promise<number> {
+    return this.brandModel.destroy({ truncate: true });
+  }
 }

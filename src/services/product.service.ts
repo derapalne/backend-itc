@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, literal } from 'sequelize';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { Brand } from 'src/models/brand.model';
 import { Product } from 'src/models/product.model';
@@ -66,5 +66,16 @@ export class ProductService {
   async deleteById(id: number): Promise<void> {
     const product = await this.findById(id);
     return await product.destroy();
+  }
+
+  async findRandom(): Promise<Product> {
+    return await this.productModel.findOne({
+      order: literal('random()'),
+      include: Brand,
+    });
+  }
+
+  async truncateTable(): Promise<number> {
+    return await this.productModel.destroy({ truncate: true });
   }
 }

@@ -28,6 +28,7 @@ export class AuthService {
         }),
         userData: {
           username: user.username,
+          isAdmin: user.isAdmin,
         },
       };
     } catch (error) {
@@ -48,6 +49,7 @@ export class AuthService {
         }),
         userData: {
           username: user.username,
+          isAdmin: user.isAdmin,
         },
       };
     } catch (error) {

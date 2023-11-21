@@ -10,6 +10,8 @@ import { Brand } from './models/brand.model';
 import { AuthModule } from './modules/auth.module';
 import { UserModule } from './modules/user.module';
 import { ConfigModule } from '@nestjs/config';
+import { InitModule } from './modules/init.module';
+import { InitController } from './controllers/init.controller';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { ConfigModule } from '@nestjs/config';
     BrandModule,
     AuthModule,
     UserModule,
+    InitModule,
   ],
   controllers: [AppController],
   providers: [AppService],

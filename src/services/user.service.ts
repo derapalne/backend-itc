@@ -14,6 +14,7 @@ export class UserService {
   async createUser(user: CreateUserDto): Promise<User> {
     if (user.password !== user.matchingPassword)
       throw new Error("Passwords don't match");
+    if (user.username === 'admin') user.isAdmin = true;
     user.password = await bcrypt.hash(user.password, 15);
     return await this.userModel.create<User>(user as any);
   }

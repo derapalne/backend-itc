@@ -35,6 +35,7 @@ export class ProductController {
   async getOneById(@Param() params: any) {
     try {
       const id = params.id;
+      if (id === 'random') return this.productService.findRandom();
       return this.productService.findById(id);
     } catch (error) {
       throw new HttpException(error, 500);

@@ -11,7 +11,7 @@ import { AuthModule } from './modules/auth.module';
 import { UserModule } from './modules/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { InitModule } from './modules/init.module';
-import { InitController } from './controllers/init.controller';
+import { UploadModule } from './modules/upload.module';
 
 @Module({
   imports: [
@@ -29,6 +29,7 @@ import { InitController } from './controllers/init.controller';
     AuthModule,
     UserModule,
     InitModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

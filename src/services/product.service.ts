@@ -63,6 +63,13 @@ export class ProductService {
     });
   }
 
+  async updateImageById(imageUrl: string, productId: string) {
+    return await this.productModel.update(
+      { image_url: imageUrl },
+      { where: { id: productId } },
+    );
+  }
+
   async deleteById(id: number): Promise<void> {
     const product = await this.findById(id);
     return await product.destroy();

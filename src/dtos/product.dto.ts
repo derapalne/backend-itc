@@ -5,6 +5,7 @@ export interface IProduct {
   image_url: string;
   price: number;
   brand_id: number;
+  creator_user_id: number;
 }
 
 export interface CreateProductDto {
@@ -13,6 +14,7 @@ export interface CreateProductDto {
   image_url: string;
   price: number;
   brand_id: number;
+  creator_user_id?: number;
 }
 
 export interface UpdateProductDto {
@@ -22,6 +24,7 @@ export interface UpdateProductDto {
   image_url: string;
   price: number;
   brand_id: number;
+  creator_user_id?: number;
 }
 
 export interface DeleteProductDto {

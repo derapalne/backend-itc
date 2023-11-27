@@ -1,8 +1,11 @@
+import { IProduct } from './product.dto';
+
 export interface IUser {
   id: number;
   username: string;
   password: string;
   isAdmin: boolean;
+  products: IProduct[];
 }
 
 export interface CreateUserDto {

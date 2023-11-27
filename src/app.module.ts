@@ -12,6 +12,7 @@ import { UserModule } from './modules/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { InitModule } from './modules/init.module';
 import { UploadModule } from './modules/upload.module';
+import { User } from './models/user.model';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { UploadModule } from './modules/upload.module';
       database: 'itcrowd.backend',
       autoLoadModels: true,
       synchronize: true,
-      models: [Product, Brand],
+      models: [Product, Brand, User],
     }),
     ProductModule,
     BrandModule,

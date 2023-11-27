@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Req,
+  Request,
 } from '@nestjs/common';
 import { ProductService } from 'src/services/product.service';
 import {
@@ -22,7 +23,7 @@ import {
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { Request } from 'express';
+import { Request as ExpressRequest } from 'express';
 // import { extname } from 'path';
 
 @Controller('products')
@@ -51,8 +52,12 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createProduct(@Body() createProductDto: CreateProductDto) {
+  async createProduct(
+    @Body() createProductDto: CreateProductDto,
+    @Request() req,
+  ) {
     try {
+      createProductDto.creator_user_id = req.user.userId;
       return await this.productService.create(createProductDto);
     } catch (error) {
       throw new HttpException(error, 500);
@@ -72,12 +77,10 @@ export class ProductController {
     }),
   )
   async updateProductImage(
-    @Req() req: Request,
+    @Req() req: ExpressRequest,
     @UploadedFile() image: Express.Multer.File,
     @Param() params: any,
   ) {
-    console.log(image);
-    console.log(params.id);
     const imagePath = `${req.protocol}://${req.get('Host')}/${image.path}`;
     console.log(imagePath);
     return await this.productService.updateImageById(imagePath, params.id);

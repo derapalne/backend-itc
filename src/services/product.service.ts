@@ -4,6 +4,7 @@ import { Op, literal } from 'sequelize';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { Brand } from 'src/models/brand.model';
 import { Product } from 'src/models/product.model';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class ProductService {
@@ -13,6 +14,14 @@ export class ProductService {
   ) {}
 
   async findAll(name?: string, description?: string): Promise<Product[]> {
+    // Create Include options object
+    const includeOptions = [
+      Brand,
+      {
+        model: User,
+        attributes: ['id', 'username'],
+      },
+    ];
     // Si se trae nombre y descripción
     if (name && description) {
       return this.productModel.findAll({
@@ -22,23 +31,25 @@ export class ProductService {
             description: { [Op.substring]: description },
           },
         },
-        include: Brand,
+        include: includeOptions,
       });
       // Si solamente se trae nombre
     } else if (name && !description) {
       return this.productModel.findAll({
         where: { name: { [Op.substring]: name } },
-        include: Brand,
+        include: includeOptions,
       });
       // Si solamente se trae descripción
     } else if (!name && description) {
       return this.productModel.findAll({
         where: { description: { [Op.substring]: description } },
-        include: Brand,
+        include: includeOptions,
       });
       // Si no se trae ninguno
     } else {
-      return this.productModel.findAll({ include: Brand });
+      return this.productModel.findAll({
+        include: includeOptions,
+      });
     }
   }
 
@@ -47,7 +58,13 @@ export class ProductService {
       where: {
         id,
       },
-      include: Brand,
+      include: [
+        Brand,
+        {
+          model: User,
+          attributes: ['id', 'username'],
+        },
+      ],
     });
   }
 
@@ -78,7 +95,13 @@ export class ProductService {
   async findRandom(): Promise<Product> {
     return await this.productModel.findOne({
       order: literal('random()'),
-      include: Brand,
+      include: [
+        Brand,
+        {
+          model: User,
+          attributes: ['id', 'username'],
+        },
+      ],
     });
   }
 

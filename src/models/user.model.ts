@@ -9,7 +9,9 @@ import {
   UpdatedAt,
   DeletedAt,
   AllowNull,
+  HasMany,
 } from 'sequelize-typescript';
+import { Product } from './product.model';
 
 @Table({
   tableName: 'user',
@@ -31,6 +33,9 @@ export class User extends Model {
 
   @Column
   isAdmin: boolean;
+
+  @HasMany(() => Product)
+  products: Product[];
 
   @CreatedAt
   creationDate: Date;

@@ -13,6 +13,7 @@ import {
   AllowNull,
 } from 'sequelize-typescript';
 import { Brand } from './brand.model';
+import { User } from './user.model';
 
 @Table({
   tableName: 'product',
@@ -47,6 +48,14 @@ export class Product extends Model {
 
   @BelongsTo(() => Brand)
   brand: Brand;
+
+  @AllowNull(false)
+  @ForeignKey(() => User)
+  @Column
+  creator_user_id: number;
+
+  @BelongsTo(() => User)
+  user: User;
 
   @CreatedAt
   creationDate: Date;

@@ -1,4 +1,4 @@
-import { Controller, Delete, Post, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Post, Request, UseGuards } from '@nestjs/common';
 import { CreateBrandDto } from 'src/dtos/brand.dto';
 import { CreateProductDto } from 'src/dtos/product.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -12,8 +12,11 @@ export class InitController {
     private brandService: BrandService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async initDatabase() {
+  async initDatabase(@Request() req) {
+    // Fix req typing
+    const activeUser = req.user;
     const existingBrands = await this.brandService.findAll();
     const existingProducts = await this.productService.findAll();
     if (existingBrands.length && existingProducts.length)
@@ -55,6 +58,7 @@ export class InitController {
       image_url:
         'https://pics.freeicons.io/uploads/icons/png/15442581531684167749-512.png',
       brand_id: savedBrand1.id,
+      creator_user_id: activeUser.userId,
     };
     const product2: CreateProductDto = {
       name: 'Hearing Loss',
@@ -63,6 +67,7 @@ export class InitController {
       image_url:
         'https://pics.freeicons.io/uploads/icons/png/20026720911684167748-512.png',
       brand_id: savedBrand2.id,
+      creator_user_id: activeUser.userId,
     };
     const product3: CreateProductDto = {
       name: 'Fix The Snakes',
@@ -72,6 +77,7 @@ export class InitController {
       image_url:
         'https://pics.freeicons.io/uploads/icons/png/2301764921684167749-512.png',
       brand_id: savedBrand3.id,
+      creator_user_id: activeUser.userId,
     };
     const product4: CreateProductDto = {
       name: 'Eat So Much You No-Clip Into The Walls',
@@ -80,6 +86,7 @@ export class InitController {
       image_url:
         'https://pics.freeicons.io/uploads/icons/png/11687572861684167751-512.png',
       brand_id: savedBrand4.id,
+      creator_user_id: activeUser.userId,
     };
     const product5: CreateProductDto = {
       name: 'A Big B',
@@ -89,6 +96,7 @@ export class InitController {
       image_url:
         'https://pics.freeicons.io/uploads/icons/png/2990294221684167750-512.png',
       brand_id: savedBrand1.id,
+      creator_user_id: activeUser.userId,
     };
     // Save Products
     const savedProduct1 = this.productService.create(product1 as any);
@@ -105,6 +113,7 @@ export class InitController {
       !savedProduct5
     )
       return { error: 'Error saving products' };
+    console.log(req.user.userId);
     return { success: 'Database initialized' };
   }
 

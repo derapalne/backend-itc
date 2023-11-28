@@ -14,7 +14,7 @@ export class AuthService {
   async signIn(userDto: SignUserDto): Promise<any> {
     try {
       const user = await this.userService.findByUsername(userDto.username);
-      if (!user) throw new HttpException('User not found', 404);
+      if (!user) throw new HttpException('User not found', 403);
       const validPassword = await bcrypt.compare(
         userDto.password,
         user.password,

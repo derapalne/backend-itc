@@ -10,9 +10,12 @@ export class AuthController {
   async login(@Body() loginUserDto: SignUserDto) {
     try {
       const isAuthorized = await this.authService.signIn(loginUserDto);
-      if (!isAuthorized) throw new Error('User is not authorized');
+      if (!isAuthorized) throw new HttpException('User is not authorized', 403);
       return isAuthorized;
     } catch (error) {
+      if (error.status) {
+        throw new HttpException(error, error.status);
+      }
       throw new HttpException(error, 500);
     }
   }

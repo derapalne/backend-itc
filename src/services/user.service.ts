@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from 'src/dtos/user.dto';
 import { User } from 'src/models/user.model';
 import * as bcrypt from 'bcrypt';
+import { Product } from 'src/models/product.model';
+import { Brand } from 'src/models/brand.model';
+import { literal } from 'sequelize';
 
 @Injectable()
 export class UserService {
@@ -10,6 +13,24 @@ export class UserService {
 
   async getAllUsers(): Promise<User[]> {
     return await this.userModel.findAll();
+  }
+
+  async findById(userId: number): Promise<User> {
+    return await this.userModel.findOne({
+      where: { id: userId },
+      include: [{ model: Product, include: [Brand] }],
+      attributes: {
+        exclude: ['password'],
+        include: [
+          [
+            literal(
+              `(SELECT COUNT(p.id) FROM product AS p WHERE p.creator_user_id = ${userId})`,
+            ),
+            'n_products',
+          ],
+        ],
+      },
+    });
   }
 
   async findByUsername(username: string): Promise<User> {

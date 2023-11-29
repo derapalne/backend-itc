@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op, literal } from 'sequelize';
+import { Includeable, Op, literal } from 'sequelize';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { Brand } from 'src/models/brand.model';
 import { Product } from 'src/models/product.model';
@@ -15,11 +15,20 @@ export class ProductService {
 
   async findAll(name?: string, description?: string): Promise<Product[]> {
     // Create Include options object
-    const includeOptions = [
+    const includeOptions: Includeable[] = [
       Brand,
       {
         model: User,
-        attributes: ['id', 'username'],
+        attributes: [
+          'id',
+          'username',
+          [
+            literal(
+              `(SELECT COUNT(p.id) FROM product as p WHERE p.creator_user_id = user.id AND p.deletedAt IS NULL)`,
+            ),
+            'n_products',
+          ],
+        ],
       },
     ];
     // Si se trae nombre y descripción
@@ -62,7 +71,16 @@ export class ProductService {
         Brand,
         {
           model: User,
-          attributes: ['id', 'username'],
+          attributes: [
+            'id',
+            'username',
+            [
+              literal(
+                `(SELECT COUNT(p.id) FROM product as p WHERE p.creator_user_id = user.id AND p.deletedAt IS NULL)`,
+              ),
+              'n_products',
+            ],
+          ],
         },
       ],
     });
@@ -99,7 +117,16 @@ export class ProductService {
         Brand,
         {
           model: User,
-          attributes: ['id', 'username'],
+          attributes: [
+            'id',
+            'username',
+            [
+              literal(
+                `(SELECT COUNT(p.id) FROM product as p WHERE p.creator_user_id = user.id AND p.deletedAt IS NULL)`,
+              ),
+              'n_products',
+            ],
+          ],
         },
       ],
     });

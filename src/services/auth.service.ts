@@ -27,6 +27,7 @@ export class AuthService {
           secret: process.env['JWT_SECRET'],
         }),
         userData: {
+          id: user.id,
           username: user.username,
           isAdmin: user.isAdmin,
         },

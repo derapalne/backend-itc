@@ -107,19 +107,79 @@ export class InitController {
       brand_id: savedBrand1.id,
       creator_user_id: defaultUser.id,
     };
+    const product6: CreateProductDto = {
+      name: 'Antique Radio',
+      description:
+        'Only plays hits from 1959 to 1976. Contact seller for showcase before purchasing.',
+      price: 2500,
+      image_url:
+        'https://pics.freeicons.io/uploads/icons/png/19957571011684167751-512.png',
+      brand_id: savedBrand1.id,
+      creator_user_id: defaultUser.id,
+    };
+    const product7: CreateProductDto = {
+      name: 'Cursed Parasol',
+      description:
+        'This parasol gets smaller everytime you use it until it reaches the floor, then it will revert to its original height.',
+      price: 1890,
+      image_url:
+        'https://pics.freeicons.io/uploads/icons/png/456725181684167750-512.png',
+      brand_id: savedBrand2.id,
+      creator_user_id: defaultUser.id,
+    };
+    const product8: CreateProductDto = {
+      name: 'Hyper Bullying',
+      description:
+        'The unfortunate person who is gifted this exquisite Hyper Bullying will be the reciever of extreme, goofy, unstoppable bullying for at least 3 to 5 years. 1 year redeem warranty.',
+      price: 85900,
+      image_url:
+        'https://pics.freeicons.io/uploads/icons/png/11803857551684167754-512.png',
+      brand_id: savedBrand3.id,
+      creator_user_id: defaultUser.id,
+    };
+    const product9: CreateProductDto = {
+      name: 'Ban Spaceships',
+      description:
+        'Stop all spaceships flying on national airspace for 35 years.',
+      price: 150000,
+      image_url:
+        'https://pics.freeicons.io/uploads/icons/png/15181181791684167751-512.png',
+      brand_id: savedBrand4.id,
+      creator_user_id: defaultUser.id,
+    };
+    const product10: CreateProductDto = {
+      name: 'Indestructible Brick Wall',
+      description:
+        'A big indestructible, impossible to tresspass brick wall. 10 meters wide 3 meters high, prebuilt and delivered straight to your home.',
+      price: 8950,
+      image_url:
+        'https://pics.freeicons.io/uploads/icons/png/15370948411684167753-512.png',
+      brand_id: savedBrand1.id,
+      creator_user_id: defaultUser.id,
+    };
     // Save Products
     const savedProduct1 = this.productService.create(product1 as any);
     const savedProduct2 = this.productService.create(product2 as any);
     const savedProduct3 = this.productService.create(product3 as any);
     const savedProduct4 = this.productService.create(product4 as any);
     const savedProduct5 = this.productService.create(product5 as any);
+    const savedProduct6 = this.productService.create(product6 as any);
+    const savedProduct7 = this.productService.create(product7 as any);
+    const savedProduct8 = this.productService.create(product8 as any);
+    const savedProduct9 = this.productService.create(product9 as any);
+    const savedProduct10 = this.productService.create(product10 as any);
     // Verify
     if (
       !savedProduct1 ||
       !savedProduct2 ||
       !savedProduct3 ||
       !savedProduct4 ||
-      !savedProduct5
+      !savedProduct5 ||
+      !savedProduct6 ||
+      !savedProduct7 ||
+      !savedProduct8 ||
+      !savedProduct9 ||
+      !savedProduct10
     )
       return { error: 'Error saving products' };
     return { success: 'Database initialized' };

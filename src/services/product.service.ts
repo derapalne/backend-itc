@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Includeable, Op, literal } from 'sequelize';
+import { IncludeOptions, Op, WhereOptions, literal } from 'sequelize';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { Brand } from 'src/models/brand.model';
 import { Product } from 'src/models/product.model';
@@ -13,10 +13,14 @@ export class ProductService {
     private productModel: typeof Product,
   ) {}
 
-  async findAll(name?: string, description?: string): Promise<Product[]> {
+  async findAll(
+    name?: string,
+    description?: string,
+    brand?: string,
+  ): Promise<Product[]> {
     // Create Include options object
-    const includeOptions: Includeable[] = [
-      Brand,
+    const includeOptions: IncludeOptions[] = [
+      { model: Brand, where: {} },
       {
         model: User,
         attributes: [
@@ -31,35 +35,30 @@ export class ProductService {
         ],
       },
     ];
-    // Si se trae nombre y descripción
-    if (name && description) {
-      return this.productModel.findAll({
-        where: {
-          [Op.or]: {
-            name: { [Op.substring]: name },
-            description: { [Op.substring]: description },
-          },
-        },
-        include: includeOptions,
-      });
-      // Si solamente se trae nombre
-    } else if (name && !description) {
-      return this.productModel.findAll({
-        where: { name: { [Op.substring]: name } },
-        include: includeOptions,
-      });
-      // Si solamente se trae descripción
-    } else if (!name && description) {
-      return this.productModel.findAll({
-        where: { description: { [Op.substring]: description } },
-        include: includeOptions,
-      });
-      // Si no se trae ninguno
+    // Create where options object
+    let whereOptions: WhereOptions = {};
+    // Add provided clauses
+    if (name) whereOptions.name = { [Op.substring]: name };
+    if (description) whereOptions.description = { [Op.substring]: description };
+    // Add brand clause to includeOptions
+    if (brand) includeOptions[0].where = { name: { [Op.substring]: brand } };
+    // Add OR conditional if more than 1 present
+    if (Object.keys(whereOptions).length > 1) {
+      whereOptions = { [Op.or]: whereOptions };
     } else {
+      whereOptions = whereOptions;
+    }
+    // If length is 1 or has OR conditional search with options
+    if (Object.keys(whereOptions).length || Op.or in whereOptions) {
       return this.productModel.findAll({
+        where: whereOptions,
         include: includeOptions,
       });
     }
+    // Else search without filters
+    return this.productModel.findAll({
+      include: includeOptions,
+    });
   }
 
   async findById(id: number): Promise<Product> {

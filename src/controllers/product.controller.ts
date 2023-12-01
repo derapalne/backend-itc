@@ -31,9 +31,13 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  async getAll(@Query('n') name: string, @Query('d') description: string) {
+  async getAll(
+    @Query('n') name: string,
+    @Query('d') description: string,
+    @Query('b') brand: string,
+  ) {
     try {
-      return this.productService.findAll(name, description);
+      return this.productService.findAll(name, description, brand);
     } catch (error) {
       throw new HttpException(error, 500);
     }

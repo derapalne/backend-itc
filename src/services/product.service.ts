@@ -61,6 +61,34 @@ export class ProductService {
     });
   }
 
+  async findForListing(
+    name?: string,
+    description?: string,
+    limit?: number,
+  ): Promise<Product[]> {
+    const limitQuery = limit ? limit : 10;
+    // Create Include options object
+    let whereOptions: WhereOptions = {};
+    if (name) whereOptions.name = { [Op.substring]: name };
+    if (description) whereOptions.description = { [Op.substring]: description };
+    if (Object.keys(whereOptions).length > 1) {
+      whereOptions = { [Op.or]: whereOptions };
+    } else {
+      whereOptions = whereOptions;
+    }
+    if (Object.keys(whereOptions).length || Op.or in whereOptions) {
+      return this.productModel.findAll({
+        attributes: ['id', 'name'],
+        where: whereOptions,
+        limit: limitQuery,
+      });
+    }
+    return this.productModel.findAll({
+      attributes: ['id', 'name'],
+      limit: limitQuery,
+    });
+  }
+
   async findById(id: number): Promise<Product> {
     return this.productModel.findOne({
       where: {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -13,6 +13,9 @@ import { ConfigModule } from '@nestjs/config';
 import { InitModule } from './modules/init.module';
 import { UploadModule } from './modules/upload.module';
 import { User } from './models/user.model';
+import { UserSearch } from './models/userSearch.model';
+import { JwtMiddleware } from './middlewares/jwt.middleware';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,8 +26,9 @@ import { User } from './models/user.model';
       database: 'itcrowd.backend',
       autoLoadModels: true,
       synchronize: true,
-      models: [Product, Brand, User],
+      models: [Product, Brand, User, UserSearch],
     }),
+    JwtModule.register({ secret: process.env['JWT_SECRET'] }),
     ProductModule,
     BrandModule,
     AuthModule,
@@ -35,4 +39,8 @@ import { User } from './models/user.model';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes('/');
+  }
+}

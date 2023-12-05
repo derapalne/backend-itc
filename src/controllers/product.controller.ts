@@ -24,25 +24,59 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Request as ExpressRequest } from 'express';
+import { UserSearchService } from 'src/services/userSearch.service';
+import { CreateUserSearchDto } from 'src/dtos/userSearch.dto';
 // import { extname } from 'path';
 
 @Controller('products')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private userSearchService: UserSearchService,
+  ) {}
 
   @Get()
   async getAll(
     @Query('n') name: string,
     @Query('d') description: string,
     @Query('b') brand: string,
+    @Request() req,
   ) {
     try {
+      if ((name || description || brand) && req.user.userId) {
+        console.log('Creating search object...');
+        console.log(req.user);
+        const newSearch: CreateUserSearchDto = {
+          title: name,
+          // Url reformatted
+          value: `?n=${name ? name : ''}&d=${
+            description ? description : ''
+          }&b=${brand ? brand : ''}`,
+          user_id: req.user.userId,
+        };
+        console.log('Created Search object, saving...');
+        const search = await this.userSearchService.createSearch(newSearch);
+        console.log(search);
+      }
       return this.productService.findAll(name, description, brand);
     } catch (error) {
-      throw new HttpException(error, 500);
+      throw new HttpException(error.message, 500);
     }
   }
 
+  @Get('/listing')
+  async getForListings(
+    @Query('n') name: string,
+    @Query('d') description: string,
+    @Query('l') limit: number,
+  ) {
+    try {
+      console.log('listing');
+      return this.productService.findForListing(name, description, limit);
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
+  }
   @Get(':id')
   async getOneById(@Param() params: any) {
     try {

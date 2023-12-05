@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { IncludeOptions, Op, WhereOptions, literal } from 'sequelize';
+import {
+  FindAttributeOptions,
+  IncludeOptions,
+  Op,
+  Order,
+  WhereOptions,
+  literal,
+} from 'sequelize';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { Brand } from 'src/models/brand.model';
 import { Product } from 'src/models/product.model';
@@ -18,6 +25,17 @@ export class ProductService {
     description?: string,
     brand?: string,
   ): Promise<Product[]> {
+    const order: Order = [['n_points', 'DESC']];
+    const attributes: FindAttributeOptions = {
+      include: [
+        [
+          literal(
+            `(SELECT COUNT(pp.id) FROM product_point pp WHERE pp.product_id = product.id AND pp.deletedAt IS NULL)`,
+          ),
+          'n_points',
+        ],
+      ],
+    };
     // Create Include options object
     const includeOptions: IncludeOptions[] = [
       { model: Brand, where: {} },
@@ -51,13 +69,16 @@ export class ProductService {
     // If length is 1 or has OR conditional search with options
     if (Object.keys(whereOptions).length || Op.or in whereOptions) {
       return this.productModel.findAll({
+        attributes: attributes,
         where: whereOptions,
         include: includeOptions,
       });
     }
     // Else search without filters
     return this.productModel.findAll({
+      attributes: attributes,
       include: includeOptions,
+      order: order,
     });
   }
 
@@ -67,6 +88,17 @@ export class ProductService {
     limit?: number,
   ): Promise<Product[]> {
     const limitQuery = limit ? limit : 10;
+    const order: Order = [['n_points', 'DESC']];
+    const attributes: FindAttributeOptions = [
+      [
+        literal(
+          `(SELECT COUNT(pp.id) FROM product_point pp WHERE pp.product_id = product.id AND pp.deletedAt IS NULL)`,
+        ),
+        'n_points',
+      ],
+      'id',
+      'name',
+    ];
     // Create Include options object
     let whereOptions: WhereOptions = {};
     if (name) whereOptions.name = { [Op.substring]: name };
@@ -78,13 +110,15 @@ export class ProductService {
     }
     if (Object.keys(whereOptions).length || Op.or in whereOptions) {
       return this.productModel.findAll({
-        attributes: ['id', 'name'],
+        attributes: attributes,
         where: whereOptions,
+        order: order,
         limit: limitQuery,
       });
     }
     return this.productModel.findAll({
-      attributes: ['id', 'name'],
+      attributes: attributes,
+      order: order,
       limit: limitQuery,
     });
   }
@@ -93,6 +127,16 @@ export class ProductService {
     return this.productModel.findOne({
       where: {
         id,
+      },
+      attributes: {
+        include: [
+          [
+            literal(
+              `(SELECT COUNT(pp.id) FROM product_point pp WHERE pp.product_id = product.id AND pp.deletedAt IS NULL)`,
+            ),
+            'n_points',
+          ],
+        ],
       },
       include: [
         Brand,

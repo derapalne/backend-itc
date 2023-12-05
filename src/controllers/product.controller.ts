@@ -26,12 +26,14 @@ import { diskStorage } from 'multer';
 import { Request as ExpressRequest } from 'express';
 import { UserSearchService } from 'src/services/userSearch.service';
 import { CreateUserSearchDto } from 'src/dtos/userSearch.dto';
+import { ProductPointService } from 'src/services/productPoint.service';
 // import { extname } from 'path';
 
 @Controller('products')
 export class ProductController {
   constructor(
     private productService: ProductService,
+    private productPointService: ProductPointService,
     private userSearchService: UserSearchService,
   ) {}
 
@@ -77,12 +79,29 @@ export class ProductController {
       throw new HttpException(error.message, 500);
     }
   }
-  @Get(':id')
-  async getOneById(@Param() params: any) {
+
+  @Get('/random')
+  async getOneRandom() {
     try {
-      const id = params.id;
-      if (id === 'random') return this.productService.findRandom();
-      return this.productService.findById(id);
+      return await this.productService.findRandom();
+    } catch (error) {
+      throw new HttpException(error, 500);
+    }
+  }
+
+  @Get(':id')
+  async getOneById(@Param('id') id: number) {
+    try {
+      const lastProductPoint =
+        await this.productPointService.getLastPointByProductId(id);
+      const aMinuteAgo = new Date(Date.now() - 60000);
+      if (!lastProductPoint || lastProductPoint.creationDate < aMinuteAgo)
+        this.productPointService.createProductPoint({
+          product_id: id,
+          reason: 'visit',
+          value: 1,
+        });
+      return await this.productService.findById(id);
     } catch (error) {
       throw new HttpException(error, 500);
     }

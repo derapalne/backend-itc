@@ -21,6 +21,7 @@ export class UserSearchService {
     return await this.userSearchModel.findOne({
       where: { user_id: userId },
       order: [['id', 'DESC']],
+      limit: 1,
     });
   }
 

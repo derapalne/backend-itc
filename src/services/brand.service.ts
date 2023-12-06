@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { literal } from 'sequelize';
 import { CreateBrandDto, UpdateBrandDto } from 'src/dtos/brand.dto';
 import { Brand } from 'src/models/brand.model';
+import { Product } from 'src/models/product.model';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class BrandService {
@@ -19,6 +22,38 @@ export class BrandService {
       where: {
         id,
       },
+      include: [
+        {
+          model: Product,
+          attributes: {
+            include: [
+              [
+                literal(
+                  `(SELECT COUNT(pp.id) FROM product_point pp WHERE pp.product_id = product.id AND pp.deletedAt IS NULL)`,
+                ),
+                'n_points',
+              ],
+            ],
+          },
+          order: [['n_points', 'DESC']],
+          separate: true,
+          include: [
+            {
+              model: User,
+              attributes: [
+                'id',
+                'username',
+                [
+                  literal(
+                    `(SELECT COUNT(p.id) FROM product as p WHERE p.creator_user_id = user.id AND p.deletedAt IS NULL)`,
+                  ),
+                  'n_products',
+                ],
+              ],
+            },
+          ],
+        },
+      ],
     });
   }
 

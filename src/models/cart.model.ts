@@ -11,10 +11,12 @@ import {
   ForeignKey,
   BelongsTo,
   AllowNull,
-  HasMany,
+  Default,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { User } from './user.model';
 import { Product } from './product.model';
+import { CartProduct } from './cartProduct.model';
 
 @Table({
   tableName: 'cart',
@@ -35,6 +37,7 @@ export class Cart extends Model {
   @Column
   user_id: number;
 
+  @Default(true)
   @AllowNull(false)
   @Column
   isActive: boolean;
@@ -42,7 +45,7 @@ export class Cart extends Model {
   @BelongsTo(() => User)
   user: User;
 
-  @HasMany(() => Product)
+  @BelongsToMany(() => Product, () => CartProduct)
   products: Product[];
 
   @CreatedAt

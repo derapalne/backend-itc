@@ -11,9 +11,12 @@ import {
   ForeignKey,
   BelongsTo,
   AllowNull,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { Brand } from './brand.model';
 import { User } from './user.model';
+import { Cart } from './cart.model';
+import { CartProduct } from './cartProduct.model';
 
 @Table({
   tableName: 'product',
@@ -56,6 +59,9 @@ export class Product extends Model {
 
   @BelongsTo(() => User)
   user: User;
+
+  @BelongsToMany(() => Cart, () => CartProduct)
+  carts: Cart[];
 
   @CreatedAt
   creationDate: Date;

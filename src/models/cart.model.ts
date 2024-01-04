@@ -40,7 +40,7 @@ export class Cart extends Model {
   @Default(true)
   @AllowNull(false)
   @Column
-  isActive: boolean;
+  is_active: boolean;
 
   @BelongsTo(() => User)
   user: User;

@@ -42,6 +42,9 @@ export class Cart extends Model {
   @Column
   is_active: boolean;
 
+  @Column
+  ordered_on: Date;
+
   @BelongsTo(() => User)
   user: User;
 

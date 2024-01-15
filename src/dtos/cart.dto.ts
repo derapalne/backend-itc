@@ -6,6 +6,7 @@ export interface ICart {
   user_id: number;
   products: IProduct[];
   isActive: boolean;
+  orderedOn?: Date;
 }
 
 export interface CreateCartDto {

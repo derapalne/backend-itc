@@ -27,7 +27,7 @@ import { Request as ExpressRequest } from 'express';
 import { UserSearchService } from 'src/services/userSearch.service';
 import { CreateUserSearchDto } from 'src/dtos/userSearch.dto';
 import { ProductPointService } from 'src/services/productPoint.service';
-// import { extname } from 'path';
+import { CartProductService } from 'src/services/cartProduct.service';
 
 @Controller('products')
 export class ProductController {
@@ -35,6 +35,7 @@ export class ProductController {
     private productService: ProductService,
     private productPointService: ProductPointService,
     private userSearchService: UserSearchService,
+    private cartProductService: CartProductService,
   ) {}
 
   @Get()
@@ -90,19 +91,46 @@ export class ProductController {
   }
 
   @Get(':id')
-  async getOneById(@Param('id') id: number) {
+  async getOneById(@Param('id') id: number, @Request() req) {
     try {
+      console.log('Entered execution of controller.product.getOneById');
+      // Bring last point added to product
       const lastProductPoint =
         await this.productPointService.getLastPointByProductId(id);
+      // Get the timestamp from a minute ago
       const aMinuteAgo = new Date(Date.now() - 60000);
+      // If the last point was added more than a minute ago, add a new point
+      console.log(
+        'About to check if the last product point was added less than a minute ago',
+      );
       if (!lastProductPoint || lastProductPoint.creationDate < aMinuteAgo)
         this.productPointService.createProductPoint({
           product_id: id,
           reason: 'visit',
           value: 1,
         });
-      return await this.productService.findById(id);
+      console.log('About to get the product data');
+      const product = await this.productService.findById(id);
+      let isOnCart = false;
+      console.log(req.user);
+      if (req.user.userId) {
+        console.log('About to check if the user has the product on cart');
+        console.log(
+          await this.cartProductService.isProductOnUsersCart(
+            id,
+            req.user.userId,
+          ),
+          'Is on cart',
+        );
+        isOnCart = await this.cartProductService.isProductOnUsersCart(
+          id,
+          req.user.userId,
+        );
+      }
+      const response = { ...product.dataValues, is_on_cart: isOnCart };
+      return response;
     } catch (error) {
+      if (error.message) throw new HttpException(error.message, 500);
       throw new HttpException(error, 500);
     }
   }
@@ -139,7 +167,6 @@ export class ProductController {
     @Param() params: any,
   ) {
     const imagePath = `${req.protocol}://${req.get('Host')}/${image.path}`;
-    console.log(imagePath);
     return await this.productService.updateImageById(imagePath, params.id);
   }
 

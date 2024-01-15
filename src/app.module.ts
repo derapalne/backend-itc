@@ -16,6 +16,9 @@ import { User } from './models/user.model';
 import { UserSearch } from './models/userSearch.model';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
 import { JwtModule } from '@nestjs/jwt';
+import { Cart } from './models/cart.model';
+import { CartProduct } from './models/cartProduct.model';
+import { CartModule } from './modules/cart.module';
 
 @Module({
   imports: [
@@ -26,10 +29,11 @@ import { JwtModule } from '@nestjs/jwt';
       database: 'itcrowd.backend',
       autoLoadModels: true,
       synchronize: true,
-      models: [Product, Brand, User, UserSearch],
+      models: [Product, Brand, User, UserSearch, Cart, CartProduct],
     }),
     JwtModule.register({ secret: process.env['JWT_SECRET'] }),
     ProductModule,
+    CartModule,
     BrandModule,
     AuthModule,
     UserModule,

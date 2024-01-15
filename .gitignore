@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # database
 .db
+/sql
 
 # uploads
 uploads

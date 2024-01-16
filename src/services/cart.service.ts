@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { literal } from 'sequelize';
 import { CreateCartDto } from 'src/dtos/cart.dto';
 import { Brand } from 'src/models/brand.model';
@@ -22,17 +23,38 @@ export class CartService {
   async addProductToCart(
     cartId: number,
     productId: number,
-  ): Promise<CartProduct> {
-    return await this.cartProductModel.create({
-      cart_id: cartId,
-      product_id: productId,
+  ): Promise<{ product_id: number; cart_id: number }> {
+    const wasProductOnCart = await this.cartProductModel.findOne({
+      where: {
+        cart_id: cartId,
+        product_id: productId,
+        deletedAt: {
+          [Op.not]: null,
+        },
+      },
+      paranoid: false,
     });
+    if (!wasProductOnCart) {
+      console.log('Product wasnt on cart');
+      await this.cartProductModel.create({
+        cart_id: cartId,
+        product_id: productId,
+      });
+    } else {
+      console.log('Product was on cart');
+      await this.cartProductModel.update(
+        { deletedAt: null },
+        { where: { cart_id: cartId, product_id: productId }, paranoid: false },
+      );
+    }
+    return { product_id: productId, cart_id: cartId };
   }
 
   async removeProductFromCart(
     cartId: number,
     productId: number,
   ): Promise<number> {
+    console.log(cartId, productId);
     return await this.cartProductModel.destroy({
       where: {
         cart_id: cartId,
@@ -90,6 +112,7 @@ export class CartService {
               ],
             },
           ],
+          paranoid: true,
         },
       ],
     });

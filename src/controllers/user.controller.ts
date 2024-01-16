@@ -62,7 +62,7 @@ export class UserController {
       const cart = await this.cartService.getActiveCartByUserId(
         req.user.userId,
       );
-      console.log('cart', cart);
+      // console.log('cart', cart);
       return cart ?? { id: 0, products: [] };
     } catch (error) {
       console.log(error);

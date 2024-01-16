@@ -5,6 +5,7 @@ export interface IUser {
   username: string;
   password: string;
   isAdmin: boolean;
+  last_login: string;
   products: IProduct[];
 }
 
@@ -13,6 +14,7 @@ export interface CreateUserDto {
   password: string;
   matchingPassword: string;
   isAdmin?: boolean;
+  last_login?: Date;
 }
 
 export interface SignUserDto {

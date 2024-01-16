@@ -1,16 +1,21 @@
 import { Body, Controller, Post, HttpException } from '@nestjs/common';
 import { CreateUserDto, SignUserDto } from 'src/dtos/user.dto';
 import { AuthService } from 'src/services/auth.service';
+import { UserService } from 'src/services/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @Post('login')
   async login(@Body() loginUserDto: SignUserDto) {
     try {
       const isAuthorized = await this.authService.signIn(loginUserDto);
       if (!isAuthorized) throw new HttpException('User is not authorized', 403);
+      await this.userService.updateLastLogin(isAuthorized.userData.id);
       return isAuthorized;
     } catch (error) {
       if (error.status) {

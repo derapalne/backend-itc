@@ -42,6 +42,20 @@ export class UserService {
       throw new Error("Passwords don't match");
     if (user.username === 'admin') user.isAdmin = true;
     user.password = await bcrypt.hash(user.password, 15);
+    user.last_login = new Date(Date.now());
     return await this.userModel.create<User>(user as any);
+  }
+
+  async updateLastLogin(userId: number): Promise<[affectedCount: number]> {
+    try {
+      const user = await this.userModel.findByPk(userId);
+      if (!user) throw new Error('User not found');
+      return await this.userModel.update(
+        { last_login: Date.now() },
+        { where: { id: userId } },
+      );
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

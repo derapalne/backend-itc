@@ -37,6 +37,9 @@ export class User extends Model {
   @HasMany(() => Product)
   products: Product[];
 
+  @Column
+  last_login: Date;
+
   @CreatedAt
   creationDate: Date;
 

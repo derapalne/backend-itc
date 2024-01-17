@@ -41,7 +41,6 @@ export class CartController {
       let activeCart = await this.cartService.getActiveCartByUserId(
         req.user.userId,
       );
-      console.log(activeCart);
       if (!activeCart)
         activeCart = await this.cartService.createCart({
           name: 'New Cart',
@@ -68,15 +67,14 @@ export class CartController {
   @Delete('/')
   async removeProductFromActiveCart(@Body() body, @Request() req) {
     try {
-      const activeCart = await this.cartService.getOrderedCartsByUserId(
+      const activeCart = await this.cartService.getActiveCartByUserId(
         req.user.userId,
       );
-      if (!activeCart.length)
-        throw new HttpException('No active cart found', 404);
+      if (!activeCart) throw new HttpException('No active cart found', 404);
       const productId = body.product_id;
       if (!productId) throw new HttpException('Missing product Id', 400);
       const insertOk = await this.cartService.removeProductFromCart(
-        activeCart[0].id,
+        activeCart.id,
         productId,
       );
       return {

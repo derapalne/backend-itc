@@ -3,22 +3,22 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Product } from './models/product.model';
-import { ProductModule } from './modules/product.module';
-import { BrandModule } from './modules/brand.module';
-import { Brand } from './models/brand.model';
-import { AuthModule } from './modules/auth.module';
-import { UserModule } from './modules/user.module';
+import { Product } from './product/product.model';
+import { ProductModule } from './product/product.module';
+import { BrandModule } from './brand/brand.module';
+import { Brand } from './brand/brand.model';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { InitModule } from './modules/init.module';
-import { UploadModule } from './modules/upload.module';
-import { User } from './models/user.model';
-import { UserSearch } from './models/userSearch.model';
+import { InitModule } from './init/init.module';
+import { UploadModule } from './upload/upload.module';
+import { User } from './user/user.model';
+import { UserSearch } from './user/search/userSearch.model';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
 import { JwtModule } from '@nestjs/jwt';
-import { Cart } from './models/cart.model';
-import { CartProduct } from './models/cartProduct.model';
-import { CartModule } from './modules/cart.module';
+import { Cart } from './cart/cart.model';
+import { CartProduct } from './cart/product/cartProduct.model';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [

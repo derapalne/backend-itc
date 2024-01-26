@@ -15,6 +15,7 @@ export interface CreateProductDto {
   price: number;
   brand_id: number;
   creator_user_id?: number;
+  tags_ids?: number[];
 }
 
 export interface UpdateProductDto {
@@ -25,6 +26,7 @@ export interface UpdateProductDto {
   price: number;
   brand_id: number;
   creator_user_id?: number;
+  tags_ids?: number[];
 }
 
 export interface DeleteProductDto {

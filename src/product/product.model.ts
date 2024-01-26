@@ -17,6 +17,8 @@ import { Brand } from '../brand/brand.model';
 import { User } from '../user/user.model';
 import { Cart } from '../cart/cart.model';
 import { CartProduct } from '../cart/product/cartProduct.model';
+import { ProductTag } from './tag/productTag.model';
+import { Tag } from 'src/tag/tag.model';
 
 @Table({
   tableName: 'product',
@@ -62,6 +64,9 @@ export class Product extends Model {
 
   @BelongsToMany(() => Cart, () => CartProduct)
   carts: Cart[];
+
+  @BelongsToMany(() => Tag, () => ProductTag)
+  tags: Tag[];
 
   @CreatedAt
   creationDate: Date;

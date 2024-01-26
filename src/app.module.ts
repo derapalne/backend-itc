@@ -19,6 +19,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { Cart } from './cart/cart.model';
 import { CartProduct } from './cart/product/cartProduct.model';
 import { CartModule } from './cart/cart.module';
+import { TagModule } from './tag/tag.module';
+import { Tag } from './tag/tag.model';
+import { ProductTag } from './product/tag/productTag.model';
 
 @Module({
   imports: [
@@ -29,7 +32,16 @@ import { CartModule } from './cart/cart.module';
       database: 'itcrowd.backend',
       autoLoadModels: true,
       synchronize: true,
-      models: [Product, Brand, User, UserSearch, Cart, CartProduct],
+      models: [
+        Product,
+        Brand,
+        User,
+        UserSearch,
+        Cart,
+        CartProduct,
+        Tag,
+        ProductTag,
+      ],
     }),
     JwtModule.register({ secret: process.env['JWT_SECRET'] }),
     ProductModule,
@@ -39,6 +51,7 @@ import { CartModule } from './cart/cart.module';
     UserModule,
     InitModule,
     UploadModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,6 +10,9 @@ import { ProductPointService } from 'src/product/point/productPoint.service';
 import { CartProduct } from 'src/cart/product/cartProduct.model';
 import { CartProductService } from 'src/cart/product/cartProduct.service';
 import { Cart } from 'src/cart/cart.model';
+import { ProductTagService } from './tag/productTag.service';
+import { Tag } from 'src/tag/tag.model';
+import { ProductTag } from './tag/productTag.model';
 
 @Module({
   imports: [
@@ -19,6 +22,8 @@ import { Cart } from 'src/cart/cart.model';
       ProductPoint,
       CartProduct,
       Cart,
+      Tag,
+      ProductTag,
     ]),
   ],
   providers: [
@@ -26,6 +31,7 @@ import { Cart } from 'src/cart/cart.model';
     UserSearchService,
     ProductPointService,
     CartProductService,
+    ProductTagService,
   ],
   controllers: [ProductController],
   exports: [ProductService],

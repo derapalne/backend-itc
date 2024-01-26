@@ -12,6 +12,7 @@ import { CreateProductDto, UpdateProductDto } from 'src/product/product.dto';
 import { Brand } from 'src/brand/brand.model';
 import { Product } from 'src/product/product.model';
 import { User } from 'src/user/user.model';
+import { Tag } from 'src/tag/tag.model';
 
 @Injectable()
 export class ProductService {
@@ -24,6 +25,7 @@ export class ProductService {
     name?: string,
     description?: string,
     brand?: string,
+    tag?: string,
   ): Promise<Product[]> {
     const order: Order = [['n_points', 'DESC']];
     const attributes: FindAttributeOptions = {
@@ -39,6 +41,12 @@ export class ProductService {
     // Create Include options object
     const includeOptions: IncludeOptions[] = [
       { model: Brand, where: {} },
+      {
+        model: Tag,
+        attributes: ['id', 'name'],
+        where: { active: true },
+        through: { attributes: [] },
+      },
       {
         model: User,
         attributes: [
@@ -60,6 +68,9 @@ export class ProductService {
     if (description) whereOptions.description = { [Op.substring]: description };
     // Add brand clause to includeOptions
     if (brand) includeOptions[0].where = { name: { [Op.substring]: brand } };
+    // Same with tag
+    if (tag)
+      includeOptions[1].where = { active: true, name: { [Op.substring]: tag } };
     // Add OR conditional if more than 1 present
     if (Object.keys(whereOptions).length > 1) {
       whereOptions = { [Op.or]: whereOptions };
@@ -140,6 +151,13 @@ export class ProductService {
       },
       include: [
         Brand,
+        { model: Tag },
+        {
+          model: Tag,
+          attributes: ['id', 'name'],
+          where: { active: true },
+          through: { attributes: [] },
+        },
         {
           model: User,
           attributes: [
